@@ -111,6 +111,136 @@ var Genetic = Genetic || (function(){
 		this.entities = [];
 		
 		this.usingWebWorker = false;
+
+
+		this.startPopulationBasedIncrementalLearningGA = function () {
+
+			var probabilities = [];
+			var chromosomeLength = 100;
+
+			//intialize probability vector
+			for(var i = 0; i < chromosomeLength; i++) {
+				probabilities[i] = 0.5;
+			}
+
+			this.startPopulationBasedIncrementalLearningGA2(probabilities);
+		}
+
+		this.startPopulationBasedIncrementalLearningGA2 = function (probabilities) {
+
+
+			var numberOfGeneratedIndividuals = 50;
+			var individuals = [];
+
+			for(var i = 0; i < numberOfGeneratedIndividuals; i++) {
+				individuals[i] = this.generateIndividual(probabilities);
+			}
+
+			for(var i = 0; i < numberOfGeneratedIndividuals; i++) {
+				this.evaluateIndividual(individuals[i]);
+			}
+
+			//sort the indivuduals based on fitness
+
+			learningRate = 0.5;
+
+			//update the probability vector
+			var nv = 25;
+			for(var j = 0; j < nv; j++) {
+
+				for(var i = 0; i < chromosomeLength; i++) {
+					
+					probabilities[i] = probabilities[i] * (1 - learningRate) + individuals[j][i] * (learningRate);
+					
+				}
+			}
+
+			startPopulationBasedIncrementalLearningGA2(probabilities);
+		}
+
+		this.generateIndividual = function (probabilities) {
+
+			var individual = {};
+			individual.fitness = 0;
+			individual.values = [];
+			var chromosomeLength = 100;
+
+			for(var i = 0; i < chromosomeLength; i++) {
+
+				if(probabilities[i] < Math.random()) {
+					individual.values[i] = 0;
+				} else {
+					individual.values[i] = 1;
+				}
+			}
+
+			return individual;
+
+		}
+
+		this.evaluateIndividual = function (individual) {
+
+			
+			var chromosomeLength = 100;
+
+			for(var i = 0; i < chromosomeLength; i++) {
+				if(individual.values[i] == 1) {
+					individual.fitness++;
+				}
+			}
+
+		}
+
+		this.startCompactGA = function () {
+
+			var probabilities = [];
+			var chromosomeLength = 100;
+
+			//intialize probability vector
+			for(var i = 0; i < chromosomeLength; i++) {
+				probabilities[i] = 0.5;
+			}
+
+			this.startCompactGA2(probabilities);
+		}
+
+		this.startCompactGA2 = function (probabilities) {
+
+			var a = generateIndividual(probabilities);
+			var b = generateIndividual(probabilities);
+
+			var winner = compete(a, b);
+			var loser = compete(a, b);
+
+			var chromosomeLength = 100;
+			for(var i = 0; i < chromosomeLength; i++) {
+
+				if(winner != loser){
+					if(winner == 1) {
+						probabilities[i] = probabilities[i] + (1 / populationSize);
+					} else {
+						probabilities[i] = probabilities[i] - (1 / populationSize);
+					}
+				}
+				
+			}
+			for(var i = 0; i < chromosomeLength; i++) {
+				if(probabilities[i] > 0 && probabilities[i] < 1) {
+					//keep going
+				}
+			}
+			
+		}
+
+		this.startFastMessyGA = function () {
+
+
+		}
+
+		this.startGeneExpressionMessyGA = function () {
+
+
+		}
 		
 		this.start = function() {
 			
