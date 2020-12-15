@@ -1,8 +1,9 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 
 window.Genetic = require('./genetic');
+window.pbil = require('./pbil');
 
-},{"./genetic":2}],2:[function(require,module,exports){
+},{"./genetic":2,"./pbil":3}],2:[function(require,module,exports){
 
 var Genetic = Genetic || (function(){
 	
@@ -111,136 +112,6 @@ var Genetic = Genetic || (function(){
 		this.entities = [];
 		
 		this.usingWebWorker = false;
-
-
-		this.startPopulationBasedIncrementalLearningGA = function () {
-
-			var probabilities = [];
-			var chromosomeLength = 100;
-
-			//intialize probability vector
-			for(var i = 0; i < chromosomeLength; i++) {
-				probabilities[i] = 0.5;
-			}
-
-			this.startPopulationBasedIncrementalLearningGA2(probabilities);
-		}
-
-		this.startPopulationBasedIncrementalLearningGA2 = function (probabilities) {
-
-
-			var numberOfGeneratedIndividuals = 50;
-			var individuals = [];
-
-			for(var i = 0; i < numberOfGeneratedIndividuals; i++) {
-				individuals[i] = this.generateIndividual(probabilities);
-			}
-
-			for(var i = 0; i < numberOfGeneratedIndividuals; i++) {
-				this.evaluateIndividual(individuals[i]);
-			}
-
-			//sort the indivuduals based on fitness
-
-			learningRate = 0.5;
-
-			//update the probability vector
-			var nv = 25;
-			for(var j = 0; j < nv; j++) {
-
-				for(var i = 0; i < chromosomeLength; i++) {
-					
-					probabilities[i] = probabilities[i] * (1 - learningRate) + individuals[j][i] * (learningRate);
-					
-				}
-			}
-
-			startPopulationBasedIncrementalLearningGA2(probabilities);
-		}
-
-		this.generateIndividual = function (probabilities) {
-
-			var individual = {};
-			individual.fitness = 0;
-			individual.values = [];
-			var chromosomeLength = 100;
-
-			for(var i = 0; i < chromosomeLength; i++) {
-
-				if(probabilities[i] < Math.random()) {
-					individual.values[i] = 0;
-				} else {
-					individual.values[i] = 1;
-				}
-			}
-
-			return individual;
-
-		}
-
-		this.evaluateIndividual = function (individual) {
-
-			
-			var chromosomeLength = 100;
-
-			for(var i = 0; i < chromosomeLength; i++) {
-				if(individual.values[i] == 1) {
-					individual.fitness++;
-				}
-			}
-
-		}
-
-		this.startCompactGA = function () {
-
-			var probabilities = [];
-			var chromosomeLength = 100;
-
-			//intialize probability vector
-			for(var i = 0; i < chromosomeLength; i++) {
-				probabilities[i] = 0.5;
-			}
-
-			this.startCompactGA2(probabilities);
-		}
-
-		this.startCompactGA2 = function (probabilities) {
-
-			var a = generateIndividual(probabilities);
-			var b = generateIndividual(probabilities);
-
-			var winner = compete(a, b);
-			var loser = compete(a, b);
-
-			var chromosomeLength = 100;
-			for(var i = 0; i < chromosomeLength; i++) {
-
-				if(winner != loser){
-					if(winner == 1) {
-						probabilities[i] = probabilities[i] + (1 / populationSize);
-					} else {
-						probabilities[i] = probabilities[i] - (1 / populationSize);
-					}
-				}
-				
-			}
-			for(var i = 0; i < chromosomeLength; i++) {
-				if(probabilities[i] > 0 && probabilities[i] < 1) {
-					//keep going
-				}
-			}
-			
-		}
-
-		this.startFastMessyGA = function () {
-
-
-		}
-
-		this.startGeneExpressionMessyGA = function () {
-
-
-		}
 		
 		this.start = function() {
 			
@@ -414,6 +285,108 @@ var Genetic = Genetic || (function(){
 // so we don't have to build to run in the browser
 if (typeof module != "undefined") {
 	module.exports = Genetic;
+}
+
+},{}],3:[function(require,module,exports){
+var pbil = pbil || (function(){
+
+
+    function pbil() {
+
+		this.startPopulationBasedIncrementalLearningGA = function () {
+
+			var probabilities = [];
+			var chromosomeLength = 100;
+
+			//intialize probability vector
+			for(var i = 0; i < chromosomeLength; i++) {
+				probabilities[i] = 0.5;
+			}
+
+			this.startPopulationBasedIncrementalLearningGA2(probabilities);
+		}
+
+		this.startPopulationBasedIncrementalLearningGA2 = function (probabilities) {
+
+
+			var numberOfGeneratedIndividuals = 50;
+			var individuals = [];
+
+			for(var i = 0; i < numberOfGeneratedIndividuals; i++) {
+				individuals[i] = this.generateIndividual(probabilities);
+			}
+
+			for(var i = 0; i < numberOfGeneratedIndividuals; i++) {
+				this.evaluateIndividual(individuals[i]);
+			}
+
+			//sort the indivuduals based on fitness
+			//do this
+
+			learningRate = 0.5;
+
+			//update the probability vector
+			var nv = 25;
+			for(var j = 0; j < nv; j++) {
+
+				for(var i = 0; i < chromosomeLength; i++) {
+					
+					probabilities[i] = probabilities[i] * (1 - learningRate) + individuals[j][i] * (learningRate);
+					
+				}
+			}
+
+			startPopulationBasedIncrementalLearningGA2(probabilities);
+		}
+
+		this.generateIndividual = function (probabilities) {
+
+			var individual = {};
+			individual.fitness = 0;
+			individual.values = [];
+			var chromosomeLength = 100;
+
+			for(var i = 0; i < chromosomeLength; i++) {
+
+				if(probabilities[i] < Math.random()) {
+					individual.values[i] = 0;
+				} else {
+					individual.values[i] = 1;
+				}
+			}
+
+			return individual;
+
+		}
+
+		this.evaluateIndividual = function (individual) {
+
+			
+			var chromosomeLength = 100;
+
+			for(var i = 0; i < chromosomeLength; i++) {
+
+				//fitness for onemax
+				if(individual.values[i] == 1) {
+					individual.fitness++;
+				}
+			}
+
+		}
+	}
+	
+	return {
+		"create": function() {
+			return new pbil();
+		}
+	};
+});
+
+
+
+// so we don't have to build to run in the browser
+if (typeof module != "undefined") {
+	module.exports = pbil;
 }
 
 },{}]},{},[1]);
